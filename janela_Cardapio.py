@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
+import pyautogui
+from pynput import mouse
 
 
 def criar_janela(pai, titulo, bg, dimensao):
@@ -98,5 +100,18 @@ botao_cadastro_item.place(x=205, y=60)
 botao_exclusao_item = tk.Button(janela_principal, text="Excluir item", width=35, height=3, bg="red2", command=excluir_item, activebackground="grey", activeforeground="black", border=3)
 botao_exclusao_item.place(x=505, y=60)
 
+'''
+def ao_clicar(x, y, botao, pressionado):
+    # 'pressionado' é True quando você aperta o botão, e False quando solta.
+    # Usamos 'if pressionado' para registrar a posição apenas no momento do clique inicial.
+    if pressionado:
+        print(f"Clique detectado! Botão: {botao} | Posição na tela: X={x}, Y={y}")
+
+print("Ouvindo cliques do mouse... Pressione Ctrl+C no terminal para encerrar.")
+
+# Cria o Listener que monitora os cliques
+with mouse.Listener(on_click=ao_clicar) as ouvinte:
+    ouvinte.join()
+'''
 
 janela_principal.mainloop()
