@@ -149,7 +149,10 @@ def funcoes_pedidos():
     listBox_pedidos = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=50, height=25)
     listBox_pedidos.config(border=5, borderwidth=5)
     listBox_pedidos.pack(anchor='w')
-    
+
+    for item in cardapio:
+        listBox_cardapio.insert(tk.END,
+        f"{item['id']}          |          {item['nome']}          |          R$ {item['preco']:.2f}")
     
     janela_pedidos.mainloop()
 
