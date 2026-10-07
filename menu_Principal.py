@@ -1,4 +1,5 @@
 janela = tk.Tk()
+janela.title("MENU PRINCIPAL")
 janela.config(bg='darkblue')
 janela.resizable(False, False)
 largura_janela = 750
