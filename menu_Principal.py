@@ -1,10 +1,17 @@
 janela = tk.Tk()
-janela.title("MENU PRINCIPAL")
-janela.config(bg="darkblue")
+janela.config(bg='darkblue')
 janela.resizable(False, False)
-janela.geometry("750x500")
+largura_janela = 750
+altura_janela = 500
+largura_tela = janela.winfo_screenwidth()
+altura_tela = janela.winfo_screenheight()
+posicao_x = int(largura_tela / 2 - largura_janela / 2)
+posicao_y = int(altura_tela / 2 - altura_janela / 2)
+janela.geometry(f"{largura_janela}x{altura_janela}+{posicao_x}+{posicao_y}")
+
 
 tk.Label(janela, text='MENU DO SISTEMA', font=("arial", 25), bg='grey').pack(side='top', anchor='center', pady=15)
+
 
 botao_cardapio = tk.Button(janela, text="Abrir cardápio", width=30, height=30, command=funcoes_cardapio, background="grey80")
 botao_cardapio.pack(side='left', padx=15, pady=100)
