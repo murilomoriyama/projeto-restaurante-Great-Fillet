@@ -1,12 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 
-def criar_janela(pai, titulo, bg, dimensao):
-    janela = tk.Toplevel(pai)
-    janela.title(titulo)
-    janela.config(bg=bg)
-    janela.geometry(dimensao)
-    return janela
 
 def funcoes_cardapio():    
     def cadastrar_item():
