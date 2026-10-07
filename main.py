@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import pyautogui
 
+
 lista_itens_cardapio = []
 
 
