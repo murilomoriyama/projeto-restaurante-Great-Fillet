@@ -1,15 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
 
-def funcoes_cardapio():
-    def criar_janela(pai, titulo, bg, dimensao):
-        janela = tk.Toplevel(pai)
-        janela.title(titulo)
-        janela.config(bg=bg)
-        janela.geometry(dimensao)
-        return janela
-    
-    
+def criar_janela(pai, titulo, bg, dimensao):
+    janela = tk.Toplevel(pai)
+    janela.title(titulo)
+    janela.config(bg=bg)
+    janela.geometry(dimensao)
+    return janela
+
+def funcoes_cardapio():    
     def cadastrar_item():
         janela_cadastro_item = criar_janela(janela_principal, "Cadastro de prato", "darkblue", "600x450")
         janela_cadastro_item.resizable(False, False)
