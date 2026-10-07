@@ -67,7 +67,6 @@ def funcoes_cardapio():
             lista_itens_cardapio.append({'ID': id_item,
                                          'NOME': nome,
                                          'PRECO': preco})
-            print(lista_itens_cardapio)
             
             adicionar_ao_cardapio(id_item, nome, preco)
             janela_cadastro_item.destroy()
