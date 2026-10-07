@@ -1,6 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
 
+def fixar_centro(janela_principal, largura_janela, altura_janela):
+    largura_tela = janela_principal.winfo_screenwidth()
+    altura_tela = janela_principal.winfo_screenheight()
+    posicao_x = int(largura_tela / 2 - largura_janela / 2)
+    posicao_y = int(altura_tela / 2 - altura_janela / 2)
+    janela_principal.geometry(f"{largura_janela}x{altura_janela}+{posicao_x}+{posicao_y}")
+    janela_principal.resizable(False, False)
 
 def criar_janela(pai, titulo, bg, dimensao):
     janela = tk.Toplevel(pai)
