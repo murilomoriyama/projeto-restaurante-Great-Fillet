@@ -84,6 +84,10 @@ def funcoes_cardapio():
     listBox_cardapio = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=70, height=25)
     listBox_cardapio.config(border=5, borderwidth=5)
     listBox_cardapio.pack(anchor='center')
+
+    for item in cardapio:
+        listBox_cardapio.insert(tk.END,
+        f"{item['id']}          |          {item['nome']}          |          R$ {item['preco']:.2f}")
     
     botao_cadastro_item = tk.Button(janela_principal, text="Adicionar item", width=35, height=3, bg="green3", command=cadastrar_item, activebackground="grey", activeforeground="black", border=3)
     botao_cadastro_item.place(x=205, y=60)
