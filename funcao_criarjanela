@@ -1,8 +1,0 @@
-import tkinter as tk
-
-def criar_janela(pai, titulo, bg, dimensao):
-    janela = tk.Toplevel(pai)
-    janela.title(titulo)
-    janela.config(bg=bg)
-    janela.geometry(dimensao)
-    return janela
