@@ -12,7 +12,7 @@ def funcoes_pedidos():
     janela_pedidos.resizable(False, False)
 
     borda = tk.Frame(janela_pedidos, bg="#7A0707", relief="ridge", bd=10)
-    borda.pack(side="top", padx=20, pady=20)
+    borda.pack(side="top", padx=20, pady=40)
     tk.Label(borda, text='MENU DE PEDIDOS', font=("arial", 25), bg='grey').pack()
 
     lancar_pedido = tk.Button(janela_pedidos, text="Lançar pedido", font=20, width=20, height=10, command=..., background="grey80")
