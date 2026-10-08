@@ -71,11 +71,11 @@ def funcoes_cardapio():
             lista_itens_cardapio.append({'ID': id_item,
                                          'NOME': nome,
                                          'PRECO': preco})
-            
+                
             adicionar_ao_cardapio(id_item, nome, preco)
             janela_cadastro_item.destroy()
      
-        
+
         botao_salvar = tk.Button(janela_cadastro_item, text="SALVAR PRATO", width=40, height=2, bg="lightgrey", command=salvar, background="grey80")
         botao_salvar.place(x=150, y=370)
         
@@ -86,9 +86,9 @@ def funcoes_cardapio():
     
     
     def adicionar_ao_cardapio(id_item, nome, preco):
-        listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}")
-        
-        
+        listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}\nasadsa")
+
+
     def excluir_item():
         selecao = listBox_cardapio.curselection()
         
@@ -135,11 +135,45 @@ def funcoes_cardapio():
     
     
 def funcoes_pedidos():
+    def lancar_pedido():
+        def add_prato():
+            prato_pedido = tk.Entry(janela_lancar_pedidos, width=50, border=3, bd=5)
+            prato_pedido.pack(side="top", anchor="w", padx=150)
+            pratos_pedido.append(prato_pedido)
+
+
+        def adicionar_fila_cozinha():
+            pedido_completo = []
+            for prato in pratos_pedido:
+                pedido_completo.append(prato.get())
+            listBox_pedidos.insert(tk.END, f"{cliente_pedido.get()} | {", ".join(pedido_completo)}")
+            janela_lancar_pedidos.destroy()
+
+
+        janela_lancar_pedidos = criar_janela(janela_pedidos, "Lançamento de pedidos", "darkblue", "600x450")
+        fixar_centro(janela_lancar_pedidos, 600, 450)
+
+        tk.Label(janela_lancar_pedidos, text="Dados do pedido ", font="30", bg="grey80", relief="ridge").pack(side="top", pady=30)
+        
+        pratos_pedido = []
+        tk.Label(janela_lancar_pedidos, text="Nome do cliente:", font=("arial", 14), bg="grey80", relief="solid").pack(side="top", anchor="w", padx=150)
+        cliente_pedido = tk.Entry(janela_lancar_pedidos, width=50, border=3, bd=5)
+        cliente_pedido.pack(side="top", anchor="w", padx=150)
+
+        tk.Label(janela_lancar_pedidos, text="Prato(s):", font=("arial", 14), bg="grey80", relief="solid").pack(side="top", anchor="w", padx=150)
+        add_prato()
+
+        botao_mais = tk.Button(janela_lancar_pedidos, text="+", font=50, relief="ridge", command=add_prato)
+        botao_mais.place(x=525, y=85)
+        botao_salvar = tk.Button(janela_lancar_pedidos, text="SALVAR", font=("arial", 12), relief="ridge", command=adicionar_fila_cozinha)
+        botao_salvar.place(x=490, y=360)
+        print(pratos_pedido)
+
+
     janela_pedidos = tk.Tk()
     janela_pedidos.title("Pedidos")
     janela_pedidos.config(bg="darkblue")
     fixar_centro(janela_pedidos, 800, 780)
-    
 
     borda = tk.Frame(janela_pedidos, bg="#7A0707", relief="ridge", bd=10)
     borda.pack(side="top", padx=20, pady=40)
@@ -148,8 +182,8 @@ def funcoes_pedidos():
     tk.Label(janela_pedidos, text='Lista de pedidos', font=("arial", 20), background='lightgrey').pack(side='top', anchor='nw', padx=20)
     
 
-    lancar_pedido = tk.Button(janela_pedidos, text="Lançar pedido", font=20, width=12, height=10, command=..., background="grey80")
-    lancar_pedido.place(x=625, y=150)
+    botao_lancar_pedido = tk.Button(janela_pedidos, text="Lançar pedido", font=20, width=12, height=10, command=lancar_pedido, background="grey80")
+    botao_lancar_pedido.place(x=625, y=150)
     
     atender_pedido = tk.Button(janela_pedidos, text="Atender pedido", font=20, width=12, height=10, command=..., background="grey80")
     atender_pedido.place(x=625, y=450)
@@ -162,7 +196,6 @@ def funcoes_pedidos():
     listBox_pedidos.config(border=5, borderwidth=5)
     listBox_pedidos.pack(anchor='w')
 
-    
     janela_pedidos.mainloop()
 
 
@@ -172,9 +205,7 @@ def funcoes_historico():
     janela_principal.config(bg='darkblue')
     fixar_centro(janela_principal, 800, 780)
     
-    
     tk.Label(janela_principal, text='Histórico de ações', background='lightgrey', font=("arial", 20)).pack(side='top', anchor='nw', padx=20, pady=40)
-    
     
     listBox_historico = tk.Listbox(janela_principal, width=130, height=40)
     listBox_historico.pack(side='bottom', anchor='center', padx=20, pady=5)
@@ -194,7 +225,7 @@ botao_cardapio.pack(side='left', padx=15, pady=80)
 botao_pedido = tk.Button(janela, text="Abrir pedidos", width=30, height=30, command=funcoes_pedidos, background="grey80", relief='raised', bd=5, font=("arial", 15))
 botao_pedido.pack(side='left', anchor='center', padx=15, pady=80)
 
-botao_historico = tk.Button(janela, text="Visualizar histórico", width=30, height=30, command=funcoes_historico, background="grey80", relief='raised', bd=5, font=("arial", 15))
+botao_historico = tk.Button(janela, text="Abrir histórico", width=30, height=30, background="grey80", relief='raised', bd=5, font=("arial", 15))
 botao_historico.pack(side='right', padx=15, pady=80)
 
 
