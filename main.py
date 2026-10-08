@@ -1,9 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
-import pyautogui
+import Pilha
+import Fila
 
 
 lista_itens_cardapio = []
+fila_dos_pedidos = Fila()
+pilha_historico = Pilha()
 
 
 def fixar_centro(janela_principal, largura_janela, altura_janela):
@@ -85,16 +88,25 @@ def funcoes_cardapio():
     def adicionar_ao_cardapio(id_item, nome, preco):
         listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}")
         
+        
     def excluir_item():
         selecao = listBox_cardapio.curselection()
-        index = lista_itens_cardapio[selecao[0]]
         
+        if len(lista_itens_cardapio) == 0:
+                    messagebox.showwarning("Excluir item", "Nenhum item no cardápio.", parent=janela_principal)
+                    return
+              
+        if len(selecao) != 0:
+                index = lista_itens_cardapio[selecao[0]]     
+
         if not selecao:
-            messagebox.showinfo("Excluir item", "Selecione um item na lista primeiro.")
+            messagebox.showwarning("Excluir item", "Selecione um item na lista primeiro.", parent=janela_principal)
             return
-        
+            
+            
         listBox_cardapio.delete(selecao[0])
         lista_itens_cardapio.remove(index)
+    
     
     janela_principal = tk.Tk()
     janela_principal.title("Cardápio")
@@ -150,9 +162,6 @@ def funcoes_pedidos():
     listBox_pedidos.config(border=5, borderwidth=5)
     listBox_pedidos.pack(anchor='w')
 
-    for item in cardapio:
-        listBox_cardapio.insert(tk.END,
-        f"{item['id']}          |          {item['nome']}          |          R$ {item['preco']:.2f}")
     
     janela_pedidos.mainloop()
 
