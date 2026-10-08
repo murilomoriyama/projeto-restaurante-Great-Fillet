@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-import Pilha
-import Fila
+from Pilha import Pilha
+from fila import Fila
 
 
 lista_itens_cardapio = []
