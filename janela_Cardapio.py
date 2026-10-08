@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
+cardapio = []
 
 def funcoes_cardapio():    
     def cadastrar_item():
@@ -40,9 +41,17 @@ def funcoes_cardapio():
                 return
             try:
                 preco = float(preco_texto)
-            except ValueError:
+            except ValueError or preco <=0:
                 messagebox.showwarning("Atenção", "Preço inválido.", parent=janela_cadastro_item)
                 return
+            if preco <= 0:
+                messagebox.showwarning("Atenção", "Preço inválido.", parent=janela_cadastro_item)
+                return
+
+            for item in cardapio:
+                if item["id"] == id_item:
+                    messagebox.showwarning("Atenção", "Já existe um prato com esse ID.", parent=janela_cadastro_item)
+                    return
      
             adicionar_ao_cardapio(id_item, nome, preco)
             janela_cadastro_item.destroy()
@@ -57,6 +66,12 @@ def funcoes_cardapio():
     
     
     def adicionar_ao_cardapio(id_item, nome, preco):
+        item = {
+            "id": id_item,
+            "nome": nome,
+            "preco": preco
+        }
+        cardapio.append(item)
         listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}")
         
     def excluir_item():
@@ -64,7 +79,9 @@ def funcoes_cardapio():
         if not selecao:
             messagebox.showinfo("Excluir item", "Selecione um item na lista primeiro.")
             return
-        listBox_cardapio.delete(selecao[0])
+        indice = selecao[0]
+        cardapio.pop(indice)
+        listBox_cardapio.delete(indice)
     
     
     janela_principal = tk.Tk()
