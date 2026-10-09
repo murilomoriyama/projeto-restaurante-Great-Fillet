@@ -11,6 +11,7 @@ pilha_historico = Pilha()
 def caixa_vazia(pai, texto, texto_tamanho, posx, posy):
     caixa = tk.Label(pai, text=texto, font=("arial", texto_tamanho), bg="white")
     caixa.place(x=posx, y=posy)
+    return caixa
 
 def fixar_centro(pai, largura_janela, altura_janela):
     largura_tela = pai.winfo_screenwidth()
@@ -140,21 +141,23 @@ def funcoes_cardapio():
 def funcoes_pedidos():
     def lancar_pedido():
         def add_id_prato():
-            prato_pedido = tk.Entry(janela_lancar_pedidos, width=50, border=3, bd=5)
-            prato_pedido.pack(side="top", anchor="w", padx=150)
-            pratos_pedido.append(prato_pedido)
+            id_prato = tk.Entry(janela_lancar_pedidos, width=50, border=3, bd=5)
+            id_prato.pack(side="top", anchor="w", padx=150)
+            pratos_pedido.append(id_prato)
 
 
         def adicionar_fila_cozinha():
             pedido_completo = []
             for id_prato in pratos_pedido:
-                #if id_prato.get() not in dicionario_cardapio:
-                    #messagebox.showwarning("Atenção", "ID de prato não encontrado: " + id_prato.get(), parent=janela_lancar_pedidos)
-                    #return
+                for dic in lista_itens_cardapio:
+                    if id_prato.get() not in dic["ID"]:
+                        messagebox.showwarning("Atenção", "ID de prato não encontrado: " + id_prato.get(), parent=janela_lancar_pedidos)
+                        return
                 pedido_completo.append(id_prato.get())
             fila_cozinha.entrar(f"{cliente_pedido.get()} | {", ".join(pedido_completo)}")
             listBox_pedidos.insert(tk.END, f"{cliente_pedido.get()} | {", ".join(pedido_completo)}")
             janela_lancar_pedidos.destroy()
+            caixa.destroy()
 
 
         janela_lancar_pedidos = criar_janela(janela_pedidos, "Lançamento de pedidos", "darkblue", "600x450")
@@ -206,12 +209,10 @@ def funcoes_pedidos():
     listBox_pedidos = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=50, height=25)
     listBox_pedidos.config(border=5, borderwidth=5)
     listBox_pedidos.pack(anchor='w')
-    
+
+    caixa = None
     if listBox_pedidos.size() == 0:
         caixa = caixa_vazia(quadrado_central, "FILA DA COZINHA VAZIA", 16, 40, 40)
-    else:
-        caixa.destroy()
-    
 
 
     janela_pedidos.mainloop()
