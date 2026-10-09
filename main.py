@@ -104,22 +104,22 @@ def funcoes_cardapio():
         quadrado_central = tk.Frame(janela_cadastro_item, background="lightgrey", width=550, height=400)
         quadrado_central.pack(anchor='center', padx=15, pady=15)
         
-        texto1 = tk.Label(janela_cadastro_item, text="JANELA DE CADASTRO DE PRATOS", bg="gray77")
+        texto1 = tk.Label(janela_cadastro_item, text="JANELA DE CADASTRO DE PRATOS", font=("Consolas", 9, "bold"), bg="gray77")
         texto1.config(relief='ridge', bd=5)
         texto1.place(x=200, y=10)
         
         
-        tk.Label(janela_cadastro_item, text="ID do prato: ").place(x=30, y=70)
+        tk.Label(janela_cadastro_item, text="ID do prato: ", font=("Consolas", 9, "bold"), relief='groove', bd=2).place(x=30, y=85)
         entrada_id = tk.Entry(janela_cadastro_item, width=50, border=3, bd=5)
         entrada_id.place(x=30, y=105)
         
         
-        tk.Label(janela_cadastro_item, text="Nome do prato: ").place(x=30, y=170)
+        tk.Label(janela_cadastro_item, text="Nome do prato: ", font=("Consolas", 9, "bold"), relief='groove', bd=2).place(x=30, y=180)
         entrada_nome = tk.Entry(janela_cadastro_item, width=50, border=3, bd=5)
         entrada_nome.place(x=30, y=200)
         
         
-        tk.Label(janela_cadastro_item, text="Preço do prato: ").place(x=30, y=270)
+        tk.Label(janela_cadastro_item, text="Preço do prato: ", font=("Consolas", 9, "bold"), relief='groove', bd=2).place(x=30, y=280)
         entrada_preco = tk.Entry(janela_cadastro_item, width=50, border=3, bd=5)
         entrada_preco.place(x=30, y=300)
         
@@ -128,7 +128,8 @@ def funcoes_cardapio():
             id_item = entrada_id.get().strip()
             nome = entrada_nome.get().strip()
             preco_texto = entrada_preco.get().strip().replace(",", ".")
-
+    
+    
             for i in nome:
                 if not i.isalpha():
                     messagebox.showwarning("Atenção", "Nome inválido.", parent=janela_cadastro_item)
@@ -138,7 +139,7 @@ def funcoes_cardapio():
                 if not i.isnumeric():
                     messagebox.showwarning("Atenção", "ID inválido.", parent=janela_cadastro_item)
                     return
-                
+            
             if not (id_item and nome and preco_texto):
                 messagebox.showwarning("Atenção", "Preencha todos os campos.", parent=janela_cadastro_item)
                 return
@@ -161,10 +162,12 @@ def funcoes_cardapio():
             janela_cadastro_item.destroy()
     
 
-        botao_salvar = tk.Button(janela_cadastro_item, text="SALVAR PRATO", width=40, height=3, bg="PaleGreen1", activebackground="green4", command=salvar)
+        botao_salvar = tk.Button(janela_cadastro_item, text="SALVAR PRATO", font=("Consolas", 9, "bold"), width=40, height=3, bg="green2", activebackground="green4", command=salvar)
+        botao_salvar.config(relief="raised", bd=3)
         botao_salvar.place(x=150, y=350)
         
-        botao_sair = tk.Button(janela_cadastro_item, text="SAIR", width=10, height=5, bg="firebrick1", activebackground="red4", command=janela_cadastro_item.destroy)
+        botao_sair = tk.Button(janela_cadastro_item, text="SAIR", font=("Consolas", 9, "bold"), width=10, height=5, bg="firebrick1", foreground="white", activebackground="red4", command=janela_cadastro_item.destroy)
+        botao_sair.config(relief="raised", bd=3)
         botao_sair.place(x=480, y=30)
     
         return janela_cadastro_item
@@ -177,7 +180,12 @@ def funcoes_cardapio():
             "preco": preco
         }
         lista_itens_cardapio.append(item)
-        listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}")
+        
+        id_formatado = f"{item['id']:<5}"
+        nome_formatado = f"{item['nome']:<30}"
+        preco_formatado = f"R$ {item['preco']:<7.2f}"
+        
+        listBox_cardapio.insert(tk.END, f"{id_formatado} | {nome_formatado} | {preco_formatado}")
         
 
     def excluir_item():
@@ -206,23 +214,29 @@ def funcoes_cardapio():
     quadrado_central = tk.Frame(janela_principal, background="white", width=900, height=650)
     quadrado_central.pack(side='bottom', anchor='sw', padx=15, pady=15)
     
-    texto_cardapio = tk.Label(janela_principal, text="Cardápio", font=("Arial", 20))
-    texto_cardapio.config(bg="lightgrey")
-    texto_cardapio.pack(side='top', anchor='nw', padx=30, pady=30)
+    texto_cardapio = tk.Label(janela_principal, text="Cardápio", font=("Consolas", 20))
+    texto_cardapio.config(bg="lightgrey", relief='ridge', bd=5)
+    texto_cardapio.pack(side='top', anchor='nw', padx=30, pady=60)
     
-    listBox_cardapio = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=70, height=25)
+    listBox_cardapio = tk.Listbox(quadrado_central, selectmode="single", font=("Consolas", 14), width=70, height=25)
     listBox_cardapio.config(border=5, borderwidth=5)
-    listBox_cardapio.pack(anchor='center')
+    listBox_cardapio.pack(anchor='center', fill=tk.BOTH, expand=True)
 
     for item in lista_itens_cardapio:
-        listBox_cardapio.insert(tk.END,
-        f"{item['id']}          |          {item['nome']}          |          R$ {item['preco']:.2f}")
+        id_formatado = f"{item['id']:<5}"
+        nome_formatado = f"{item['nome']:<30}"
+        preco_formatado = f"R$ {item['preco']:<7.2f}"
     
-    botao_cadastro_item = tk.Button(janela_principal, text="Adicionar item", width=35, height=3, bg="green2", command=cadastrar_item, activebackground="green4", activeforeground="black", border=3)
+    
+        linha = f"{id_formatado} | {nome_formatado} | {preco_formatado}"
+    
+        listBox_cardapio.insert(tk.END, linha)
+    
+    botao_cadastro_item = tk.Button(janela_principal, text="ADICIONAR ITEM", font=("Consolas", 9, "bold"), width=35, height=3, bg="green2", foreground="black", command=cadastrar_item, activebackground="green4", activeforeground="black", border=3)
     botao_cadastro_item.config(relief='raised', bd=5)
     botao_cadastro_item.place(x=205, y=58)
     
-    botao_exclusao_item = tk.Button(janela_principal, text="Excluir item", width=35, height=3, bg="red2", command=excluir_item, activebackground="red4", activeforeground="black", border=3)
+    botao_exclusao_item = tk.Button(janela_principal, text="EXCLUIR ITEM", font=("Consolas", 9, "bold"), width=35, height=3, bg="red2", foreground="white", command=excluir_item, activebackground="red4", activeforeground="black", border=3)
     botao_exclusao_item.config(relief='raised', bd=5)
     botao_exclusao_item.place(x=505, y=58)
     
@@ -235,7 +249,7 @@ def funcoes_pedidos():
             opcoes = []
             for dic in lista_itens_cardapio:
                 opcoes.append(f"{dic["id"]} - {dic["nome"]}")
-            prato = ttk.Combobox(janela_lancar_pedidos, values=opcoes, font=("arial", 14), state="readonly")
+            prato = ttk.Combobox(janela_lancar_pedidos, values=opcoes, font=("Consolas", 14), state="readonly")
             prato.pack(side="top", anchor="w", padx=150)
             pratos_pedido.append(prato)
     
@@ -254,6 +268,7 @@ def funcoes_pedidos():
                 if not i.isalpha():
                     messagebox.showwarning("Atenção", "Nome inválido.", parent=janela_lancar_pedidos)
                     return
+                
             if len(nome_cliente) == 0:
                 messagebox.showwarning("Atenção", "Informe o nome do cliente.", parent=janela_lancar_pedidos)
                 return
@@ -266,8 +281,12 @@ def funcoes_pedidos():
                     return
                 pedido_completo.append(prato_escolhido)
             
-            #adiciona o pedido na fila e registra no historico
-            pedido = f"{nome_cliente} | {', '.join(pedido_completo)}"
+            
+            pedido = ", ".join(pedido_completo)
+            nome_formatado = f"{nome_cliente:<15}"
+            pedido_formatado = f"{pedido:<15}"
+            
+            pedido = f"{nome_formatado} | {pedido_formatado}"
             fila_cozinha.entrar(pedido)
             pilha_historico.push({"acao": ACAO_LANCAR, "pedido": pedido})
             janela_lancar_pedidos.destroy()
@@ -283,21 +302,21 @@ def funcoes_pedidos():
         janela_lancar_pedidos = criar_janela(janela_pedidos, "Lançamento de pedidos", "darkblue", "600x450")
         fixar_centro(janela_lancar_pedidos, 600, 550)
 
-        tk.Label(janela_lancar_pedidos, text="Dados do pedido ", font="30", bg="grey80", relief="ridge").pack(side="top", pady=30)
+        tk.Label(janela_lancar_pedidos, text="DADOS DO PEDIDO", font=("Consolas", 25, "bold"), bg="grey80", relief="ridge", bd=5).pack(side="top", pady=30)
         
         pratos_pedido = []
-        tk.Label(janela_lancar_pedidos, text="Nome do cliente:", font=("arial", 14), bg="grey80", relief="solid").pack(side="top", anchor="w", padx=150)
+        tk.Label(janela_lancar_pedidos, text="Nome do cliente:", font=("Consolas", 14), bg="grey80", relief="solid").pack(side="top", anchor="w", padx=150)
         cliente_pedido = tk.Entry(janela_lancar_pedidos, width=50, border=3, bd=5)
         cliente_pedido.pack(side="top", anchor="w", padx=150)
 
-        tk.Label(janela_lancar_pedidos, text="Prato(s) do pedido:", font=("arial", 14), bg="grey80", relief="solid").pack(side="top", anchor="w", padx=150)
+        tk.Label(janela_lancar_pedidos, text="Prato(s) do pedido:", font=("Consolas", 14), bg="grey80", relief="solid").pack(side="top", anchor="w", padx=150)
         add_prato_pedido()
 
         botao_mais = tk.Button(janela_lancar_pedidos, text="+", font=50, relief="ridge", command=add_prato_pedido)
         botao_mais.place(x=465, y=180)
         botao_menos = tk.Button(janela_lancar_pedidos, text="-", font=50, relief="ridge", command=remove_prato_pedido)
         botao_menos.place(x=515, y=180)
-        botao_salvar = tk.Button(janela_lancar_pedidos, text="SALVAR", font=("arial", 12), relief="ridge", command=adicionar_fila_cozinha)
+        botao_salvar = tk.Button(janela_lancar_pedidos, text="SALVAR", font=("Consolas", 12), relief="ridge", command=adicionar_fila_cozinha)
         botao_salvar.place(x=490, y=360)
 
 
@@ -329,16 +348,16 @@ def funcoes_pedidos():
 
     borda = tk.Frame(janela_pedidos, bg="grey", relief="ridge", bd=5)
     borda.pack(side="top", padx=20, pady=35)
-    tk.Label(borda, text='MENU DE PEDIDOS', font=("arial", 25), bg='grey').pack()
-
-    tk.Label(janela_pedidos, text='Lista de pedidos', font=("arial", 20), background='lightgrey').pack(side='top', anchor='nw', padx=20)
+    
+    tk.Label(borda, text='MENU DE PEDIDOS', font=("Consolas", 25, "bold"), bg='grey').pack()
+    tk.Label(janela_pedidos, text='Lista de pedidos', font=("Consolas", 20), background='lightgrey', relief='ridge', bd=5).pack(side='top', anchor='nw', padx=20)
     
 
-    botao_lancar_pedido = tk.Button(janela_pedidos, text="Lançar pedido", font=20, width=12, height=10, command=lancar_pedido, background="LightBlue1")
+    botao_lancar_pedido = tk.Button(janela_pedidos, text="LANÇAR PEDIDO", font=("Consolas", 13, "bold"), width=14, height=10, command=lancar_pedido, background="LightBlue1")
     botao_lancar_pedido.config(relief='raised', bd=5)
     botao_lancar_pedido.place(x=625, y=205)
     
-    botao_atender_pedido = tk.Button(janela_pedidos, text="Atender pedido", font=20, width=12, height=10, command=atender_pedido, background="orange")
+    botao_atender_pedido = tk.Button(janela_pedidos, text="ATENDER PEDIDO", font=("Consolas", 13, "bold"), width=14, height=10, command=atender_pedido, background="orange")
     botao_atender_pedido.config(relief='raised', bd=5)
     botao_atender_pedido.place(x=625, y=450)
     
@@ -346,7 +365,7 @@ def funcoes_pedidos():
     quadrado_central = tk.Frame(janela_pedidos, background="white", width=600, height=650)
     quadrado_central.pack(side='left', anchor='center', padx=15, pady=15)
     
-    listBox_pedidos = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=50, height=25)
+    listBox_pedidos = tk.Listbox(quadrado_central, selectmode="single", font=("Consolas", 14), width=50, height=25)
     listBox_pedidos.config(border=5, borderwidth=5)
     listBox_pedidos.pack(anchor='w')
 
@@ -363,7 +382,7 @@ def funcoes_historico():
         registros = obter_historico()
         listBox_historico.delete(0, tk.END)
         for registro in registros:
-            listBox_historico.insert(tk.END, f"{ROTULOS_ACAO[registro['acao']]} | {registro['pedido']}")
+            listBox_historico.insert(tk.END, f"{ROTULOS_ACAO[registro['acao']]} ➔ {registro['pedido']}")
 
 
     def desfazer_ultima_acao():
@@ -390,14 +409,14 @@ def funcoes_historico():
     janela_principal.title("JANELA DE HISTÓRICO")
     janela_principal.config(bg='darkblue')
     fixar_centro(janela_principal, 800, 780)
-
-    tk.Label(janela_principal, text='Histórico de ações', bd=5, background='lightgrey', font=("arial", 20)).pack(side='top', anchor='nw', padx=20, pady=40)
     
-    listBox_historico = tk.Listbox(janela_principal, width=130, height=40)
+    tk.Label(janela_principal, text='Histórico de ações', relief='ridge', bd=5, background='lightgrey', font=("Consolas", 20)).pack(side='top', anchor='nw', padx=20, pady=40)
+    
+    listBox_historico = tk.Listbox(janela_principal, width=130, height=40, font=("Consolas", 14))
     listBox_historico.config(border=5, borderwidth=5)
     listBox_historico.pack(side='bottom', anchor='center', padx=20, pady=5)
 
-    botao_desfazer = tk.Button(janela_principal, text="Desfazer última ação", width=35, height=3, bg="red2", command=desfazer_ultima_acao, border=3)
+    botao_desfazer = tk.Button(janela_principal, text="DESFAZER ÚLTIMA AÇÃO", font=("Consolas", 10, "bold"), foreground="white", width=35, height=3, bg="red2", command=desfazer_ultima_acao, border=3)
     botao_desfazer.config(relief='raised', bd=5)
     botao_desfazer.place(x=520, y=40)
 
@@ -412,16 +431,16 @@ janela.config(bg='darkblue')
 fixar_centro(janela, 1125, 500)
 
 
-tk.Label(janela, text='MENU DO SISTEMA', font=("arial", 25), bg='grey', relief='ridge', bd=5).pack(side='top', anchor='center', pady=15)
+tk.Label(janela, text='MENU DO SISTEMA', font=("Consolas", 25), bg='grey', relief='ridge', bd=5).pack(side='top', anchor='center', pady=15)
 
 
-botao_cardapio = tk.Button(janela, text="Abrir cardápio", width=30, height=30, command=funcoes_cardapio, background="grey80", relief='raised', bd=5, font=("arial", 15))
+botao_cardapio = tk.Button(janela, text="Abrir cardápio", width=30, height=30, command=funcoes_cardapio, background="grey80", relief='raised', bd=5, font=("Consolas", 15))
 botao_cardapio.pack(side='left', padx=15, pady=80)
 
-botao_pedido = tk.Button(janela, text="Abrir pedidos", width=30, height=30, command=funcoes_pedidos, background="grey80", relief='raised', bd=5, font=("arial", 15))
+botao_pedido = tk.Button(janela, text="Abrir pedidos", width=30, height=30, command=funcoes_pedidos, background="grey80", relief='raised', bd=5, font=("Consolas", 15))
 botao_pedido.pack(side='left', anchor='center', padx=15, pady=80)
 
-botao_historico = tk.Button(janela, text="Abrir histórico", width=30, height=30, command=funcoes_historico, background="grey80", relief='raised', bd=5, font=("arial", 15))
+botao_historico = tk.Button(janela, text="Abrir histórico", width=30, height=30, command=funcoes_historico, background="grey80", relief='raised', bd=5, font=("Consolas", 15))
 botao_historico.pack(side='right', padx=15, pady=80)
 
 
