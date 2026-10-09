@@ -163,8 +163,8 @@ def funcoes_pedidos():
             pedido_completo = []
             for id_prato in pratos_pedido:
                 for dic in lista_itens_cardapio:
-                    if id_prato.get() not in dic["ID"]:
-                        messagebox.showwarning("Atenção", "ID de prato não encontrado: " + id_prato.get(), parent=janela_lancar_pedidos)
+                    if id_prato.get() not in dic["id"] or id_prato.get() == None:
+                        messagebox.showwarning("Atenção", "ID do prato não encontrado: " + id_prato.get(), parent=janela_lancar_pedidos)
                         return
                 pedido_completo.append(id_prato.get())
             fila_cozinha.entrar(f"{cliente_pedido.get()} | {", ".join(pedido_completo)}")
@@ -172,6 +172,10 @@ def funcoes_pedidos():
             janela_lancar_pedidos.destroy()
             caixa.destroy()
 
+
+        if len(lista_itens_cardapio) == 0:
+            messagebox.showwarning("Atenção", "Cardápio vazio", parent=janela_pedidos)
+            return            
 
         janela_lancar_pedidos = criar_janela(janela_pedidos, "Lançamento de pedidos", "darkblue", "600x450")
         fixar_centro(janela_lancar_pedidos, 600, 450)
