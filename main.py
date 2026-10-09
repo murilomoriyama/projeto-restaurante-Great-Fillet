@@ -199,8 +199,8 @@ def funcoes_pedidos():
     botao_lancar_pedido = tk.Button(janela_pedidos, text="Lançar pedido", font=20, width=12, height=10, command=lancar_pedido, background="grey80")
     botao_lancar_pedido.place(x=625, y=150)
     
-    atender_pedido = tk.Button(janela_pedidos, text="Atender pedido", font=20, width=12, height=10, command=atender_pedido, background="grey80")
-    atender_pedido.place(x=625, y=450)
+    botao_atender_pedido = tk.Button(janela_pedidos, text="Atender pedido", font=20, width=12, height=10, command=atender_pedido, background="grey80")
+    botao_atender_pedido.place(x=625, y=450)
     
     
     quadrado_central = tk.Frame(janela_pedidos, background="white", width=600, height=650)
