@@ -72,10 +72,15 @@ def funcoes_cardapio():
                 messagebox.showwarning("Atenção", "Preço inválido.", parent=janela_cadastro_item)
                 return
 
-            lista_itens_cardapio.append({'ID': id_item,
-                                         'NOME': nome,
-                                         'PRECO': preco})
-                
+            if preco <= 0:
+                messagebox.showwarning("Atenção", "Preço inválido.", parent=janela_cadastro_item)
+                return
+
+            for item in lista_itens_cardapio:
+                if item["id"] == id_item:
+                    messagebox.showwarning("Atenção", "Já existe um prato com esse ID.", parent=janela_cadastro_item)
+                    return
+                  
             adicionar_ao_cardapio(id_item, nome, preco)
             janela_cadastro_item.destroy()
      
@@ -90,26 +95,30 @@ def funcoes_cardapio():
     
     
     def adicionar_ao_cardapio(id_item, nome, preco):
-        listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}\nasadsa")
-
+        item = {
+            "id": id_item,
+            "nome": nome,
+            "preco": preco
+        }
+        lista_itens_cardapio.append(item)
+        listBox_cardapio.insert(tk.END, f"{id_item}          |          {nome}          |          R$ {preco:.2f}")
+        
 
     def excluir_item():
         selecao = listBox_cardapio.curselection()
         
         if len(lista_itens_cardapio) == 0:
                     messagebox.showwarning("Excluir item", "Nenhum item no cardápio.", parent=janela_principal)
-                    return
-              
-        if len(selecao) != 0:
-                index = lista_itens_cardapio[selecao[0]]     
+                    return 
 
         if not selecao:
             messagebox.showwarning("Excluir item", "Selecione um item na lista primeiro.", parent=janela_principal)
             return
             
             
-        listBox_cardapio.delete(selecao[0])
-        lista_itens_cardapio.remove(index)
+        indice = selecao[0]
+        lista_itens_cardapio.pop(indice)
+        listBox_cardapio.delete(indice)
     
     
     janela_principal = tk.Tk()
@@ -128,6 +137,10 @@ def funcoes_cardapio():
     listBox_cardapio = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=70, height=25)
     listBox_cardapio.config(border=5, borderwidth=5)
     listBox_cardapio.pack(anchor='center')
+
+    for item in lista_itens_cardapio:
+        listBox_cardapio.insert(tk.END,
+        f"{item['id']}          |          {item['nome']}          |          R$ {item['preco']:.2f}")
     
     botao_cadastro_item = tk.Button(janela_principal, text="Adicionar item", width=35, height=3, bg="green3", command=cadastrar_item, activebackground="grey", activeforeground="black", border=3)
     botao_cadastro_item.place(x=205, y=60)
