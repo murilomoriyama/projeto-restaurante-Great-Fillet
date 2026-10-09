@@ -128,7 +128,17 @@ def funcoes_cardapio():
             id_item = entrada_id.get().strip()
             nome = entrada_nome.get().strip()
             preco_texto = entrada_preco.get().strip().replace(",", ".")
-    
+
+            for i in nome:
+                if not i.isalpha():
+                    messagebox.showwarning("Atenção", "Nome inválido.", parent=janela_cadastro_item)
+                    return
+
+            for i in id_item:
+                if not i.isnumeric():
+                    messagebox.showwarning("Atenção", "ID inválido.", parent=janela_cadastro_item)
+                    return
+                
             if not (id_item and nome and preco_texto):
                 messagebox.showwarning("Atenção", "Preencha todos os campos.", parent=janela_cadastro_item)
                 return
@@ -198,7 +208,7 @@ def funcoes_cardapio():
     
     texto_cardapio = tk.Label(janela_principal, text="Cardápio", font=("Arial", 20))
     texto_cardapio.config(bg="lightgrey")
-    texto_cardapio.pack(side='top', anchor='nw', padx=30, pady=60)
+    texto_cardapio.pack(side='top', anchor='nw', padx=30, pady=30)
     
     listBox_cardapio = tk.Listbox(quadrado_central, selectmode="single", font=("Arial", 14), width=70, height=25)
     listBox_cardapio.config(border=5, borderwidth=5)
@@ -240,6 +250,10 @@ def funcoes_pedidos():
 
         def adicionar_fila_cozinha():
             nome_cliente = cliente_pedido.get()
+            for i in nome_cliente:
+                if not i.isalpha():
+                    messagebox.showwarning("Atenção", "Nome inválido.", parent=janela_lancar_pedidos)
+                    return
             if len(nome_cliente) == 0:
                 messagebox.showwarning("Atenção", "Informe o nome do cliente.", parent=janela_lancar_pedidos)
                 return
@@ -315,8 +329,8 @@ def funcoes_pedidos():
 
     borda = tk.Frame(janela_pedidos, bg="grey", relief="ridge", bd=5)
     borda.pack(side="top", padx=20, pady=35)
-    
     tk.Label(borda, text='MENU DE PEDIDOS', font=("arial", 25), bg='grey').pack()
+
     tk.Label(janela_pedidos, text='Lista de pedidos', font=("arial", 20), background='lightgrey').pack(side='top', anchor='nw', padx=20)
     
 
@@ -376,8 +390,8 @@ def funcoes_historico():
     janela_principal.title("JANELA DE HISTÓRICO")
     janela_principal.config(bg='darkblue')
     fixar_centro(janela_principal, 800, 780)
-    
-    tk.Label(janela_principal, text='Histórico de ações', relief='ridge', bd=5, background='lightgrey', font=("arial", 20)).pack(side='top', anchor='nw', padx=20, pady=40)
+
+    tk.Label(janela_principal, text='Histórico de ações', bd=5, background='lightgrey', font=("arial", 20)).pack(side='top', anchor='nw', padx=20, pady=40)
     
     listBox_historico = tk.Listbox(janela_principal, width=130, height=40)
     listBox_historico.config(border=5, borderwidth=5)
