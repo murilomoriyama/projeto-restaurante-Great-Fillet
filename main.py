@@ -10,16 +10,14 @@ fila_cozinha = Fila()
 pilha_historico = Pilha()
 
 
-# serve pra poder classificar as açoes do historico
 ACAO_LANCAR = "LANCAR_PEDIDO"
 ACAO_ATENDER = "ATENDER_PEDIDO"
 ROTULOS_ACAO = {ACAO_LANCAR: "Lançar pedido", ACAO_ATENDER: "Atender pedido"}
 
-#é pra atualizar
+
 telas_abertas = {}
 
 def esvaziar_fila():
-    # esvazeia a fila... só
     itens = []
     while not fila_cozinha.isEmpty():
         itens.append(fila_cozinha.chamar())
@@ -27,7 +25,6 @@ def esvaziar_fila():
 
 
 def obter_pedidos_fila():
-    # devolve a fila sem mexer na ordem
     itens = esvaziar_fila()
     for item in itens:
         fila_cozinha.entrar(item)
@@ -35,7 +32,6 @@ def obter_pedidos_fila():
 
 
 def remover_pedido_da_fila(pedido):
-    # desfaz o Lançar pedido
     itens = esvaziar_fila()
     removido = False
     for i in range(len(itens) - 1, -1, -1):
@@ -49,7 +45,6 @@ def remover_pedido_da_fila(pedido):
 
 
 def devolver_pedido_ao_inicio_da_fila(pedido):
-    # esvazeia a fila e adiciona denovo o pedido e depois volta a fila na ordem que estava
     itens = esvaziar_fila()
     fila_cozinha.entrar(pedido)
     for item in itens:
@@ -57,7 +52,6 @@ def devolver_pedido_ao_inicio_da_fila(pedido):
 
 
 def obter_historico():
-    #serve basicamente pra poder ver o historico na ordem correta
     temporario = []
     while not pilha_historico.isEmpty():
         temporario.append(pilha_historico.pop())
@@ -67,14 +61,12 @@ def obter_historico():
 
 
 def atualizar_tela_aberta(nome):
-    # atualizador que o shido falou
     atualizar = telas_abertas.get(nome)
     if atualizar is None:
         return
     try:
         atualizar()
     except tk.TclError:
-        # a janela foi fechada
         telas_abertas.pop(nome, None)
 
 
@@ -122,7 +114,7 @@ def funcoes_cardapio():
         tk.Label(janela_cadastro_item, text="Preço do prato: ", font=("Consolas", 9, "bold"), relief='groove', bd=2).place(x=30, y=280)
         entrada_preco = tk.Entry(janela_cadastro_item, width=50, border=3, bd=5)
         entrada_preco.place(x=30, y=300)
-        
+
         
         def salvar():
             id_item = entrada_id.get().strip()
@@ -290,8 +282,8 @@ def funcoes_pedidos():
             fila_cozinha.entrar(pedido)
             pilha_historico.push({"acao": ACAO_LANCAR, "pedido": pedido})
             janela_lancar_pedidos.destroy()
-            atualizar_lista_pedidos() #atualiza pedido
-            atualizar_tela_aberta("historico") #atualiza as outras telas
+            atualizar_lista_pedidos()
+            atualizar_tela_aberta("historico")
 
 
         if len(lista_itens_cardapio) == 0:
@@ -321,13 +313,12 @@ def funcoes_pedidos():
 
 
     def atender_pedido():
-        #checa se tem algo na fila
         if fila_cozinha.isEmpty():
             messagebox.showwarning("Atenção", "Fila da cozinha vazia.", parent=janela_pedidos)
             return
 
         pedido = fila_cozinha.chamar()
-        pilha_historico.push({"acao": ACAO_ATENDER, "pedido": pedido}) #coloca a na pilha
+        pilha_historico.push({"acao": ACAO_ATENDER, "pedido": pedido})
         atualizar_lista_pedidos()
         atualizar_tela_aberta("historico")
         messagebox.showinfo("Pedido atendido", "Pedido finalizado:\n" + pedido, parent=janela_pedidos)
