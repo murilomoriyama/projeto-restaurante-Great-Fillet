@@ -8,6 +8,75 @@ lista_itens_cardapio = []
 fila_cozinha = Fila()
 pilha_historico = Pilha()
 
+
+# serve pra poder classificar as açoes do historico
+ACAO_LANCAR = "LANCAR_PEDIDO"
+ACAO_ATENDER = "ATENDER_PEDIDO"
+ROTULOS_ACAO = {ACAO_LANCAR: "Lançar pedido", ACAO_ATENDER: "Atender pedido"}
+
+#é pra atualizar
+telas_abertas = {}
+
+def esvaziar_fila():
+    # esvazeia a fila... só
+    itens = []
+    while not fila_cozinha.isEmpty():
+        itens.append(fila_cozinha.chamar())
+    return itens
+
+
+def obter_pedidos_fila():
+    # devolve a fila sem mexer na ordem
+    itens = esvaziar_fila()
+    for item in itens:
+        fila_cozinha.entrar(item)
+    return itens
+
+
+def remover_pedido_da_fila(pedido):
+    # desfaz o Lançar pedido
+    itens = esvaziar_fila()
+    removido = False
+    for i in range(len(itens) - 1, -1, -1):
+        if itens[i] == pedido:
+            itens.pop(i)
+            removido = True
+            break
+    for item in itens:
+        fila_cozinha.entrar(item)
+    return removido
+
+
+def devolver_pedido_ao_inicio_da_fila(pedido):
+    # esvazeia a fila e adiciona denovo o pedido e depois volta a fila na ordem que estava
+    itens = esvaziar_fila()
+    fila_cozinha.entrar(pedido)
+    for item in itens:
+        fila_cozinha.entrar(item)
+
+
+def obter_historico():
+    #serve basicamente pra poder ver o historico na ordem correta
+    temporario = []
+    while not pilha_historico.isEmpty():
+        temporario.append(pilha_historico.pop())
+    for registro in reversed(temporario):
+        pilha_historico.push(registro)
+    return temporario
+
+
+def atualizar_tela_aberta(nome):
+    # atualizador que o shido falou
+    atualizar = telas_abertas.get(nome)
+    if atualizar is None:
+        return
+    try:
+        atualizar()
+    except tk.TclError:
+        # a janela foi fechada
+        telas_abertas.pop(nome, None)
+
+
 def caixa_vazia(pai, texto, texto_tamanho, posx, posy):
     caixa = tk.Label(pai, text=texto, font=("arial", texto_tamanho), bg="white")
     caixa.place(x=posx, y=posy)
@@ -160,17 +229,31 @@ def funcoes_pedidos():
 
 
         def adicionar_fila_cozinha():
+            nome_cliente = cliente_pedido.get().strip()
+            if nome_cliente == "":
+                messagebox.showwarning("Atenção", "Informe o nome do cliente.", parent=janela_lancar_pedidos)
+                return
+
             pedido_completo = []
             for id_prato in pratos_pedido:
-                for dic in lista_itens_cardapio:
-                    if id_prato.get() not in dic["id"] or id_prato.get() == None:
-                        messagebox.showwarning("Atenção", "ID do prato não encontrado: " + id_prato.get(), parent=janela_lancar_pedidos)
-                        return
-                pedido_completo.append(id_prato.get())
-            fila_cozinha.entrar(f"{cliente_pedido.get()} | {", ".join(pedido_completo)}")
-            listBox_pedidos.insert(tk.END, f"{cliente_pedido.get()} | {", ".join(pedido_completo)}")
+                id_digitado = id_prato.get().strip()
+                if id_digitado == "":
+                    continue
+                if not any(dic["id"] == id_digitado for dic in lista_itens_cardapio):
+                    messagebox.showwarning("Atenção", "ID do prato não encontrado: " + id_digitado, parent=janela_lancar_pedidos)
+                    return
+                pedido_completo.append(id_digitado)
+
+            if len(pedido_completo) == 0:
+                messagebox.showwarning("Atenção", "Informe ao menos um ID de prato.", parent=janela_lancar_pedidos)
+                return
+            #adiciona o pedido na fila e registra no historico
+            pedido = f"{nome_cliente} | {', '.join(pedido_completo)}"
+            fila_cozinha.entrar(pedido)
+            pilha_historico.push({"acao": ACAO_LANCAR, "pedido": pedido})
             janela_lancar_pedidos.destroy()
-            caixa.destroy()
+            atualizar_lista_pedidos() #atualiza pedido
+            atualizar_tela_aberta("historico") #atualiza as outras telas
 
 
         if len(lista_itens_cardapio) == 0:
@@ -197,8 +280,30 @@ def funcoes_pedidos():
 
 
     def atender_pedido():
-        fila_cozinha.chamar()
-        listBox_pedidos.delete(0)
+        #checa se tem algo na fila
+        if fila_cozinha.isEmpty():
+            messagebox.showwarning("Atenção", "A fila da cozinha está vazia.", parent=janela_pedidos)
+            return
+
+        pedido = fila_cozinha.chamar()
+        pilha_historico.push({"acao": ACAO_ATENDER, "pedido": pedido}) #coloca a na pilha
+        atualizar_lista_pedidos()
+        atualizar_tela_aberta("historico")
+        messagebox.showinfo("Pedido atendido", "Pedido finalizado:\n" + pedido, parent=janela_pedidos)
+
+
+    def atualizar_lista_pedidos():
+        nonlocal caixa
+        pedidos = obter_pedidos_fila()
+        listBox_pedidos.delete(0, tk.END)
+        for pedido in pedidos:
+            listBox_pedidos.insert(tk.END, pedido)
+
+        if caixa is not None:
+            caixa.destroy()
+            caixa = None
+        if len(pedidos) == 0:
+            caixa = caixa_vazia(quadrado_central, "FILA DA COZINHA VAZIA", 16, 40, 40)
 
 
     janela_pedidos = tk.Tk()
@@ -228,14 +333,41 @@ def funcoes_pedidos():
     listBox_pedidos.pack(anchor='w')
 
     caixa = None
-    if listBox_pedidos.size() == 0:
-        caixa = caixa_vazia(quadrado_central, "FILA DA COZINHA VAZIA", 16, 40, 40)
+    telas_abertas["pedidos"] = atualizar_lista_pedidos
+    atualizar_lista_pedidos()
 
 
     janela_pedidos.mainloop()
 
 
 def funcoes_historico():
+    def atualizar_historico():
+        registros = obter_historico()
+        listBox_historico.delete(0, tk.END)
+        for registro in registros:
+            listBox_historico.insert(tk.END, f"{ROTULOS_ACAO[registro['acao']]} | {registro['pedido']}")
+
+
+    def desfazer_ultima_acao():
+        if pilha_historico.isEmpty():
+            messagebox.showwarning("Desfazer", "Não há ações para desfazer.", parent=janela_principal)
+            return
+
+        registro = pilha_historico.pop()
+        pedido = registro["pedido"]
+
+        if registro["acao"] == ACAO_LANCAR:
+            remover_pedido_da_fila(pedido)
+            mensagem = "Lançamento cancelado e removido da fila:\n" + pedido
+        else:
+            devolver_pedido_ao_inicio_da_fila(pedido)
+            mensagem = "Atendimento desfeito, pedido devolvido ao início da fila:\n" + pedido
+
+        atualizar_historico()
+        atualizar_tela_aberta("pedidos")
+        messagebox.showinfo("Desfazer", mensagem, parent=janela_principal)
+
+
     janela_principal = tk.Tk()
     janela_principal.title("JANELA DE HISTÓRICO")
     janela_principal.config(bg='darkblue')
@@ -245,6 +377,14 @@ def funcoes_historico():
     
     listBox_historico = tk.Listbox(janela_principal, width=130, height=40)
     listBox_historico.pack(side='bottom', anchor='center', padx=20, pady=5)
+
+    botao_desfazer = tk.Button(janela_principal, text="Desfazer última ação", width=25, height=2, bg="firebrick1", command=desfazer_ultima_acao, border=3)
+    botao_desfazer.place(x=520, y=40)
+
+    telas_abertas["historico"] = atualizar_historico
+    atualizar_historico()
+
+    janela_principal.mainloop()
     
 
 janela = tk.Tk()
@@ -261,7 +401,7 @@ botao_cardapio.pack(side='left', padx=15, pady=80)
 botao_pedido = tk.Button(janela, text="Abrir pedidos", width=30, height=30, command=funcoes_pedidos, background="grey80", relief='raised', bd=5, font=("arial", 15))
 botao_pedido.pack(side='left', anchor='center', padx=15, pady=80)
 
-botao_historico = tk.Button(janela, text="Abrir histórico", width=30, height=30, background="grey80", relief='raised', bd=5, font=("arial", 15))
+botao_historico = tk.Button(janela, text="Abrir histórico", width=30, height=30, command=funcoes_historico, background="grey80", relief='raised', bd=5, font=("arial", 15))
 botao_historico.pack(side='right', padx=15, pady=80)
 
 
